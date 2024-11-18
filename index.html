@@ -4,17 +4,51 @@
         <title>Michael Smith - Homework 4</title>
         
         <script id="vertex-shader" type="x-shader/x-vertex">
-            attribute vec4 vPosition;
-            uniform float userPointSize;
+            precision mediump float;
+
+            attribute vec4 attributePosition;
+            attribute float attributeBC;
+
+            uniform mat4 uniformTransform;
+            uniform mat4 uniformProject;
+
+            varying vec3 varyingBC;
 
             void main() {
-                gl_PointSize = userPointSize; 
-                gl_Position = vPosition;
+
+                gl_Position = uniformProject * uniformTransform *  attributePosition;
+                if (attributeBC == 0.0) {
+                    varyingBC = vec3(1.0, 0.0, 0.0);
+                } else if (attributeBC == 1.0) {
+                    varyingBC = vec3(0.0, 1.0, 0.0);
+                } else {
+                    varyingBC = vec3(0.0, 0.0, 1.0);
+                }
             }
         </script>
         <script id="fragment-shader" type="x-shader/x-fragment">
-            void main() {
-                gl_FragColor = vec4( 1.0, 0.0, 0.0, 1.0 );
+            precision mediump float;
+            varying vec3 varyingBC;
+            uniform vec4 uniformEdgeColor;
+
+            // wireframe shader
+            void main(){
+            // front face
+            if (gl_FrontFacing) {  
+                if (any(lessThan(varyingBC, vec3(0.03)))) {
+                    gl_FragColor= uniformEdgeColor;
+                } else {
+                    gl_FragColor= vec4(0.0, 0.0, 0.0, 1.0);
+                }
+            } else { 
+                // back facing
+                if (any(lessThan(varyingBC, vec3(0.05)))) {
+                    gl_FragColor= uniformEdgeColor;
+                } else {
+                    //gl_FragColor = vec4(1.0, 0.0, 0.0, 0.05);
+                    discard;
+                }
+            }
             }
         </script>
 
@@ -22,7 +56,16 @@
         <script src="common/initShaders.js"></script>
         <script src="common/mv.js"></script>
 
+        <script src="models/bunny.js"></script>
+        <script src="models/dragon.js"></script>
+        <script src="models/plane.js"></script>
+        <script src="models/tank.js"></script>
+        <script src="models/teapot.js"></script>
+
         <script src="src/GLCanvas.js"></script>
+        <script src="src/Entity.js"></script>
+        <script src="src/UI.js"></script>
+        <script src="src/DeepFlatten.js"></script>
     </head>
 
     <body>
@@ -30,10 +73,42 @@
         <script type="text/javascript">
             "use strict";
 
-            const WIDTH = 500;
-            const HEIGHT = 500;
+            const WIDTH = 600;
+            const HEIGHT = 600;
 
             var canvas = new Canvas(WIDTH, HEIGHT, "vertex-shader", "fragment-shader");
+
+            // Bunny in top-left viewport
+            canvas.GL().viewport(0, HEIGHT / 2, WIDTH / 2, HEIGHT / 2);
+            canvas.GL().clearColor(0.0, 0.0, 1.0, 1.0);
+            canvas.GL().clear(canvas.GL().COLOR_BUFFER_BIT | canvas.GL().DEPTH_BUFFER_BIT);
+            var bunny = new Entity(canvas.GL(), canvas.Program(), Bunny_Triangles);
+            Reset(bunny);
+            Redisplay(bunny);
+
+            // Dragon in top-right viewport
+            canvas.GL().viewport(WIDTH / 2, HEIGHT / 2, WIDTH / 2, HEIGHT / 2);
+            canvas.GL().clearColor(0.0, 0.0, 0.0, 1.0);
+            canvas.GL().clear(canvas.GL().COLOR_BUFFER_BIT | canvas.GL().DEPTH_BUFFER_BIT);
+            var dragon = new Entity(canvas.GL(), canvas.Program(), Dragon_Triangles);
+            Reset(dragon);
+            Redisplay(dragon);
+
+            // Plane in bottom-left viewport
+            canvas.GL().viewport(0, 0, WIDTH / 2, HEIGHT / 2);
+            canvas.GL().clearColor(1.0, 0.0, 0.0, 1.0);
+            canvas.GL().clear(canvas.GL().COLOR_BUFFER_BIT | canvas.GL().DEPTH_BUFFER_BIT);
+            var plane = new Entity(canvas.GL(), canvas.Program(), Plane_Triangles);
+            Reset(plane);
+            Redisplay(plane);
+
+            // Tank in bottom-right viewport
+            canvas.GL().viewport(WIDTH / 2, 0, WIDTH / 2, HEIGHT / 2);
+            canvas.GL().clearColor(0.0, 1.0, 0.0, 1.0);
+            canvas.GL().clear(canvas.GL().COLOR_BUFFER_BIT | canvas.GL().DEPTH_BUFFER_BIT);
+            var tank = new Entity(canvas.GL(), canvas.Program(), Tank_Triangles);
+            Reset(tank);
+            Redisplay(tank);
         </script>
     </body>
 </html>
