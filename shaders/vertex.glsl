@@ -1,7 +1,9 @@
-attribute vec4 vPosition;
-uniform float userPointSize;
+in vec3 vPosition;
 
-void main() {
-    gl_PointSize = userPointSize; 
-    gl_Position = vPosition;
+out vec3 color;
+
+void main() 
+{
+    gl_Position = vec4(vPosition, 1.0);
+    color = vec3(vPosition.x + 0.5, 1.0, vPosition.y + 0.5);
 }

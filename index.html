@@ -3,12 +3,24 @@
     <head>
         <title>Michael Smith - Homework 4</title>
         
-        <script id="vertex-shader" type="x-shader/x-vertex" src="shaders/vertex.glsl"></script>
-        <script id="fragment-shader1" type="x-shader/x-fragment" src="shaders/fragment.glsl"></script>
+        <script id="vertex-shader" type="x-shader/x-vertex">
+            attribute vec4 vPosition;
+            uniform float userPointSize;
+
+            void main() {
+                gl_PointSize = userPointSize; 
+                gl_Position = vPosition;
+            }
+        </script>
+        <script id="fragment-shader" type="x-shader/x-fragment">
+            void main() {
+                gl_FragColor = vec4( 1.0, 0.0, 0.0, 1.0 );
+            }
+        </script>
 
         <script src="common/webgl-utils.js"></script>
         <script src="common/initShaders.js"></script>
-        <script src="common/MV.js"></script>
+        <script src="common/mv.js"></script>
 
         <script src="src/GLCanvas.js"></script>
     </head>
