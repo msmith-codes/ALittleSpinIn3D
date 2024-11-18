@@ -2,11 +2,26 @@
 <html>
     <head>
         <title>Michael Smith - Homework 4</title>
+        
+        <script id="vertex-shader" type="x-shader/x-vertex" src="shaders/vertex.glsl"></script>
+        <script id="fragment-shader1" type="x-shader/x-fragment" src="shaders/fragment.glsl"></script>
+
+        <script src="common/webgl-utils.js"></script>
+        <script src="common/initShaders.js"></script>
+        <script src="common/MV.js"></script>
+
+        <script src="src/GLCanvas.js"></script>
     </head>
 
     <body>
-        <canvas id="glCanvas" width="640" height="480"></canvas>
+        <h1>Michael Smith - A little spin in 3D</h1>
+        <script type="text/javascript">
+            "use strict";
 
-        <script src="main.js" type="text/javascript"></script>
+            const WIDTH = 500;
+            const HEIGHT = 500;
+
+            var canvas = new Canvas(WIDTH, HEIGHT, "vertex-shader", "fragment-shaders");
+        </script>
     </body>
 </html>
