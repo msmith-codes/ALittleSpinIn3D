@@ -59,7 +59,7 @@
         <script src="models/bunny.js"></script>
         <script src="models/dragon.js"></script>
         <script src="models/plane.js"></script>
-        <script src="models/tank.js"></script>
+        <script src="models/cube.js"></script>
         <script src="models/teapot.js"></script>
 
         <script src="src/GLCanvas.js"></script>
@@ -77,38 +77,130 @@
             const HEIGHT = 600;
 
             var canvas = new Canvas(WIDTH, HEIGHT, "vertex-shader", "fragment-shader");
+            canvas.GL().enable(canvas.GL().CULL_FACE)
+            canvas.GL().cullFace(canvas.GL().BACK)
 
             // Bunny in top-left viewport
             canvas.GL().viewport(0, HEIGHT / 2, WIDTH / 2, HEIGHT / 2);
-            canvas.GL().clearColor(0.0, 0.0, 1.0, 1.0);
-            canvas.GL().clear(canvas.GL().COLOR_BUFFER_BIT | canvas.GL().DEPTH_BUFFER_BIT);
             var bunny = new Entity(canvas.GL(), canvas.Program(), Bunny_Triangles);
             Reset(bunny);
-            Redisplay(bunny);
+            Redisplay(bunny);            
 
             // Dragon in top-right viewport
             canvas.GL().viewport(WIDTH / 2, HEIGHT / 2, WIDTH / 2, HEIGHT / 2);
-            canvas.GL().clearColor(0.0, 0.0, 0.0, 1.0);
-            canvas.GL().clear(canvas.GL().COLOR_BUFFER_BIT | canvas.GL().DEPTH_BUFFER_BIT);
             var dragon = new Entity(canvas.GL(), canvas.Program(), Dragon_Triangles);
             Reset(dragon);
             Redisplay(dragon);
 
             // Plane in bottom-left viewport
             canvas.GL().viewport(0, 0, WIDTH / 2, HEIGHT / 2);
-            canvas.GL().clearColor(1.0, 0.0, 0.0, 1.0);
-            canvas.GL().clear(canvas.GL().COLOR_BUFFER_BIT | canvas.GL().DEPTH_BUFFER_BIT);
             var plane = new Entity(canvas.GL(), canvas.Program(), Plane_Triangles);
+
             Reset(plane);
             Redisplay(plane);
 
-            // Tank in bottom-right viewport
+            // Cubes in bottom-right viewport
             canvas.GL().viewport(WIDTH / 2, 0, WIDTH / 2, HEIGHT / 2);
-            canvas.GL().clearColor(0.0, 1.0, 0.0, 1.0);
-            canvas.GL().clear(canvas.GL().COLOR_BUFFER_BIT | canvas.GL().DEPTH_BUFFER_BIT);
-            var tank = new Entity(canvas.GL(), canvas.Program(), Tank_Triangles);
-            Reset(tank);
-            Redisplay(tank);
+            var cubes = [];
+            for(var i = 0; i < 5; i++) {
+                var randomX = Math.random() * 6 - 3;
+                var randomY = Math.random() * 6 - 3;
+                var randomZ = Math.random() * 9 + 1;
+                var cube = new Entity(canvas.GL(), canvas.Program(), Cube_Triangles);
+                cube.tx = randomX;
+                cube.ty = randomY;
+                cube.tz = randomZ;
+                cubes.push(cube);
+            }
+
+            for(var i = 0; i < cubes.length; i++) {
+                Redisplay(cubes[i]);
+            }
+
+            var growDirection = "small";
+            var bunnyScale = 0.5;
+
+            var planeDirection = "left";
+
+            function animate() {
+                // Clear the canvas
+                canvas.Clear();
+
+                // Update and redisplay each entity
+                canvas.GL().viewport(0, HEIGHT / 2, WIDTH / 2, HEIGHT / 2);
+
+                const bunnyMinScale = 0.5;
+                const bunnyMaxScale = 1.5;
+
+                if(bunnyScale >= bunnyMaxScale) {
+                    growDirection = "small";
+                } else if(bunnyScale <= bunnyMinScale) {
+                    growDirection = "big";
+                }
+
+                if(growDirection == "big") {
+                    bunnyScale += 0.01;
+                } else {
+                    bunnyScale -= 0.01;
+                }
+
+                bunny.sx = bunnyScale;
+                bunny.sy = bunnyScale;
+                bunny.sz = bunnyScale;
+
+                bunny.rx = (0) % 360;
+                bunny.ry = (90) % 360;
+
+
+                // Reset(bunny);
+                Redisplay(bunny);
+
+                canvas.GL().viewport(WIDTH / 2, HEIGHT / 2, WIDTH / 2, HEIGHT / 2);
+                dragon.ry = (dragon.ry + 1) % 360;
+                dragon.rx = (0) % 360;
+                // Reset(dragon);
+                Redisplay(dragon);
+
+                canvas.GL().viewport(0, 0, WIDTH / 2, HEIGHT / 2);
+
+                plane.rx = (90) % 360;
+                if(plane.tx >= 1) {
+                    planeDirection = "left";
+                } else if(plane.tx <= -1) {
+                    planeDirection = "right";
+                }
+
+                if(planeDirection == "right") {
+                    plane.tx += 0.01;
+                } else {
+                    plane.tx -= 0.01;
+                }
+
+                plane.tz = 1;
+                
+                Redisplay(plane);
+
+                canvas.GL().viewport(WIDTH / 2, 0, WIDTH / 2, HEIGHT / 2);
+                for(var i = 0; i < cubes.length; i++) {
+                    cubes[i].rx = (cubes[i].rx + 1) % 360;
+                    cubes[i].ry = (cubes[i].ry + 1) % 360;
+                    cubes[i].rz = (cubes[i].rz + 1) % 360;
+
+                    Redisplay(cubes[i]);
+                }
+
+                // Request the next frame
+                requestAnimationFrame(animate);
+    
+            }
+
+            // Start the animation loop
+            animate();
+
+            
+
+            
+
         </script>
     </body>
 </html>

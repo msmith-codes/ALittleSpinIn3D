@@ -47,7 +47,7 @@ class Entity {
        this.back = true
     }
 
-
+    
 
     SetupVBO(gl, program, tris, bcs) {
 
@@ -89,6 +89,12 @@ class Entity {
     	tmp = mult(tmp, rotate(this.rx, [1,0,0]))
 
     	this.transform = tmp
+    }
+
+    SetRotation(rx, ry, rz) {
+        this.rx = rx
+        this.ry = ry
+        this.rz = rz
     }
 
     SetCull(gl) {
