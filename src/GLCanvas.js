@@ -95,6 +95,9 @@ class Canvas {
 
         gl.frontFace(gl.CW)
 
+        gl.enable(gl.CULL_FACE)
+        gl.cullFace(gl.BACK)
+
         // set the default edge color for everything
 	    this.NewEdgeColor([1.0, 0.0, 0.0, 1.0])
     }

@@ -1,9 +1,9 @@
 'use strict';
 
 function Reset(object) {   
-    object.tz = .75
+    object.tz = 1
     object.ty = 0 
-    object.tz = .55 
+    object.tz = 1
     object.rx = 270 
     object.ry = 0
     object.rz = 0

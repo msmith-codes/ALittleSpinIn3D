@@ -59,8 +59,9 @@
         <script src="models/bunny.js"></script>
         <script src="models/dragon.js"></script>
         <script src="models/plane.js"></script>
-        <script src="models/cube.js"></script>
-        <script src="models/teapot.js"></script>
+        <script src="models/lizard.js"></script>
+        <script src="models/epcot.js"></script>
+        <script src="models/stego.js"></script>
 
         <script src="src/GLCanvas.js"></script>
         <script src="src/Entity.js"></script>
@@ -77,8 +78,6 @@
             const HEIGHT = 600;
 
             var canvas = new Canvas(WIDTH, HEIGHT, "vertex-shader", "fragment-shader");
-            canvas.GL().enable(canvas.GL().CULL_FACE)
-            canvas.GL().cullFace(canvas.GL().BACK)
 
             // Bunny in top-left viewport
             canvas.GL().viewport(0, HEIGHT / 2, WIDTH / 2, HEIGHT / 2);
@@ -101,21 +100,27 @@
 
             // Cubes in bottom-right viewport
             canvas.GL().viewport(WIDTH / 2, 0, WIDTH / 2, HEIGHT / 2);
-            var cubes = [];
-            for(var i = 0; i < 5; i++) {
-                var randomX = Math.random() * 6 - 3;
-                var randomY = Math.random() * 6 - 3;
-                var randomZ = Math.random() * 9 + 1;
-                var cube = new Entity(canvas.GL(), canvas.Program(), Cube_Triangles);
-                cube.tx = randomX;
-                cube.ty = randomY;
-                cube.tz = randomZ;
-                cubes.push(cube);
-            }
+            var epcot = new Entity(canvas.GL(), canvas.Program(), Epcot_Triangles);
+            epcot.sx = 0.5;
+            epcot.sy = 0.5;
+            epcot.sz = 0.5;
+            epcot.tz = 30;
+            Reset(epcot);
+            Redisplay(epcot);
 
-            for(var i = 0; i < cubes.length; i++) {
-                Redisplay(cubes[i]);
-            }
+            var lizard = new Entity(canvas.GL(), canvas.Program(), Lizard_Triangles);
+            lizard.sx = 0.6;
+            lizard.sy = 0.6;
+            lizard.sz = 0.6;
+            Reset(lizard);
+            Redisplay(lizard);
+
+            var stego = new Entity(canvas.GL(), canvas.Program(), Stego_Triangles);
+            stego.sx = 0.6;
+            stego.sy = 0.6;
+            stego.sz = 0.6;
+            Reset(stego);
+            Redisplay(stego);
 
             var growDirection = "small";
             var bunnyScale = 0.5;
@@ -181,13 +186,19 @@
                 Redisplay(plane);
 
                 canvas.GL().viewport(WIDTH / 2, 0, WIDTH / 2, HEIGHT / 2);
-                for(var i = 0; i < cubes.length; i++) {
-                    cubes[i].rx = (cubes[i].rx + 1) % 360;
-                    cubes[i].ry = (cubes[i].ry + 1) % 360;
-                    cubes[i].rz = (cubes[i].rz + 1) % 360;
+                epcot.ry = (epcot.ry + 0.5) % 360;
 
-                    Redisplay(cubes[i]);
-                }
+                lizard.tx = epcot.tx + 0.5 * Math.cos(epcot.ry * Math.PI / 180);
+                lizard.tz = epcot.tz + 0.5 * Math.sin(epcot.ry * Math.PI / 180);
+                lizard.ry = epcot.ry;
+
+                stego.ty = epcot.ty + 0.6 * Math.cos(epcot.ry * Math.PI / 180);
+                stego.tz = epcot.tz + 0.6 * Math.sin(epcot.ry * Math.PI / 180);
+                stego.rx = epcot.ry;
+
+                Redisplay(epcot);
+                Redisplay(lizard);
+                Redisplay(stego);
 
                 // Request the next frame
                 requestAnimationFrame(animate);
