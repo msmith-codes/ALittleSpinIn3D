@@ -127,6 +127,31 @@
 
             var planeDirection = "left";
 
+            let bunnyRed = Math.random();
+            let bunnyGreen = Math.random();
+            let bunnyBlue = Math.random();
+
+            let dragonRed = Math.random();
+            let dragonGreen = Math.random();
+            let dragonBlue = Math.random();
+
+            let planeRed = Math.random();
+            let planeGreen = Math.random();
+            let planeBlue = Math.random();
+
+            let epcotRed = 0;
+            let epcotGreen = 0;
+            let epcotBlue = 0;
+
+            let lizardRed = Math.random();
+            let lizardGreen = Math.random();
+            let lizardBlue = Math.random();
+
+            let stegoRed = Math.random();
+            let stegoGreen = Math.random();
+            let stegoBlue = Math.random();
+
+
             function animate() {
                 // Clear the canvas
                 canvas.Clear();
@@ -156,14 +181,14 @@
                 bunny.rx = (0) % 360;
                 bunny.ry = (90) % 360;
 
-
-                // Reset(bunny);
+                canvas.NewEdgeColor([bunnyRed, bunnyGreen, bunnyBlue, 1.0])
                 Redisplay(bunny);
 
                 canvas.GL().viewport(WIDTH / 2, HEIGHT / 2, WIDTH / 2, HEIGHT / 2);
                 dragon.ry = (dragon.ry + 1) % 360;
                 dragon.rx = (0) % 360;
-                // Reset(dragon);
+                
+                canvas.NewEdgeColor([dragonRed, dragonGreen, dragonBlue, 1.0])
                 Redisplay(dragon);
 
                 canvas.GL().viewport(0, 0, WIDTH / 2, HEIGHT / 2);
@@ -183,6 +208,7 @@
 
                 plane.tz = 1;
                 
+                canvas.NewEdgeColor([0.0, 1.0, 1.0, 1.0])
                 Redisplay(plane);
 
                 canvas.GL().viewport(WIDTH / 2, 0, WIDTH / 2, HEIGHT / 2);
@@ -196,8 +222,37 @@
                 stego.tz = epcot.tz + 0.6 * Math.sin(epcot.ry * Math.PI / 180);
                 stego.rx = epcot.ry;
 
+                let hue = (epcot.ry % 360) / 360;
+                let rgb = hsvToRgb(hue, 1, 1);
+                epcotRed = rgb[0];
+                epcotGreen = rgb[1];
+                epcotBlue = rgb[2];
+
+                function hsvToRgb(h, s, v) {
+                    let r, g, b;
+                    let i = Math.floor(h * 6);
+                    let f = h * 6 - i;
+                    let p = v * (1 - s);
+                    let q = v * (1 - f * s);
+                    let t = v * (1 - (1 - f) * s);
+
+                    switch (i % 6) {
+                        case 0: r = v, g = t, b = p; break;
+                        case 1: r = q, g = v, b = p; break;
+                        case 2: r = p, g = v, b = t; break;
+                        case 3: r = p, g = q, b = v; break;
+                        case 4: r = t, g = p, b = v; break;
+                        case 5: r = v, g = p, b = q; break;
+                    }
+
+                    return [r, g, b];
+                }
+
+                canvas.NewEdgeColor([epcotRed, epcotGreen, epcotBlue, 1.0])
                 Redisplay(epcot);
+                canvas.NewEdgeColor([lizardRed, lizardGreen, lizardBlue, 1.0])
                 Redisplay(lizard);
+                canvas.NewEdgeColor([stegoRed, stegoGreen, stegoBlue, 1.0])
                 Redisplay(stego);
 
                 // Request the next frame
